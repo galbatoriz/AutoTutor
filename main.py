@@ -18,22 +18,48 @@ tutorNumber = 0
 blattnummer = "01"
 tutorBuchstabe = config['Tutoren']['TutoriumBuchstabe']
 folder = {
-    "00" : "4e41298c8fa595b706c66c377ca1a6df",
-    "01" : "4e41298c8fa595b706c66c377ca1a6df",
-    "02" : "993ada6d5700be0607ddd1c4d052998c",
-    "03" : "f73e6fb5737e0c12aefce4c3bca1a89b",
-    "04" : "58d685997019802d2d161d3e4d830e06",
-    "05" : "",
-    "06" : "",
-    "07" : "",
-    "08" : "",
-    "09" : "",
-    "10" : "",
-    "11" : "",
-    "12" : "",
-    "13" : "",
-    "14" : "",
-    "15" : "",
+    "01" : "ecf95c808f6de460e2e83967f6fdbf63",
+    "02" : "2f6769357a73b6c9ac05d3211ba31506",
+    "03" : "ee25e8aa068ebe1ab58179535e7c86df", # true 3
+    #"03" : "ba5ae74b68c42a71151622485dcb7c95", # Test Dir
+    "04" : "de9389fa5ff655544ad466cf85c3ef2c",
+    "05" : "ed8d814bf7194fb20a1e16f3280e244b",
+    "06" : "4c6060f0dabd520a335fc918e98ea4ca",
+    "07" : "757e87a92fd31b89e66132479d906800",
+    "08" : "2363f537d1e31267608865ffe55d6633",
+    "09" : "b16c0331fd035e92a460e46704e63b29",
+    "10" : "ccaffde24683bfe7a162f6ff842fe097",
+    "11" : "983a93d9c057721e7c5d7176a9b0d9f4",
+    "12" : "ccf26d8dba03104091f1a02c595af097",
+    "13" : "c54e3e6d8684b78940d14a6841895669",
+    
+}
+# ADFIBJGC
+tuturBuchstabeInNummer = {
+    "A": 0,
+    "D": 1,
+    "F": 2,
+    "I": 3,
+    "B": 4,
+    "J": 5,
+    "G": 6,
+    "C" :7
+}
+
+tutorNumberPicker = {
+    "01" : [0, 1, 2, 3, 4, 5, 6, 7],
+    "02" : [7, 0, 1, 2, 3, 4, 5, 6],
+    "03" : [6, 7, 0, 1, 2, 3, 4, 5], 
+    "04" : [5, 6, 7, 0, 1, 2, 3, 4],
+    "05" : [4, 5, 6, 7, 0, 1, 2, 3],
+    "06" : [3, 4, 5, 6, 7, 0, 1, 2],
+    "07" : [2, 3, 4, 5, 6, 7, 0, 1],
+    "08" : [1, 2, 3, 4, 5, 6, 7, 0],
+    "09" : [1, 2, 3, 4, 5, 6, 7, 0],
+    "10" : [0, 1, 2, 3, 4, 5, 6, 7],
+    "11" : [7, 0, 1, 2, 3, 4, 5, 6],
+    "12" : [6, 7, 0, 1, 2, 3, 4, 5],
+    "13" : [5, 6, 7, 0, 1, 2, 3, 4]
 }
 
 genFalscheAbgaben = True
@@ -47,7 +73,7 @@ genFalscheAbgabenIncomplete = True
 while numberInputIncomplete:
     try:
         number = int(input("Welches Übungsblatt? UE"))
-        if(number < 0 or number > 15):
+        if(number <= 0 or number > 100):
             raise ValueError
         numberInputIncomplete = False
         if number < 10:
@@ -55,17 +81,37 @@ while numberInputIncomplete:
         else:
             blattnummer = str(number)    
     except ValueError:
-        print("Ungültige Eingabe. Bitte geben eine Zahl zwichen 0 und 15 ein.")
+        print("Ungültige Eingabe. Bitte geben eine Zahl zwichen 0 und 14 ein.")
+print(f"Übungsblatt UE{blattnummer} ausgewählt.")
 
+if(config['Tutoren']['UseTutoriumBuchstabe'] == True):
+    tutorInputIncomplete = False
+
+valdidCofig = True
 while tutorInputIncomplete:
-    try:
-        number = int(input("Welcher Tutor bist du? "))
-        if(number < 0 or number > 8):
-            raise ValueError
+    tutorien = "ADFIBJGC"
+    if(config['Tutoren']['UseTutoriumBuchstabe'] == 'Ja' and valdidCofig):
         tutorInputIncomplete = False
-        tutorNumber = number
-    except ValueError:
-        print("Ungültige Eingabe. Bitte geben eine Zahl zwichen 0 und 8 ein.")
+        print(f"Willkommen zurück Tutor {tutorBuchstabe}")
+    else:
+        try:
+            tutorBuchstabe = input("Welcher Tutor bist du? ")
+            tutorBuchstabe = tutorBuchstabe.upper()
+            if(tutorBuchstabe not in tutorien):
+                raise ValueError
+            tutorInputIncomplete = False
+            print(f"Willkommen zurück Tutor {tutorBuchstabe}")
+        except ValueError:
+            print("Ungültige Eingabe. Bitte geben einen Buchstaben zwichen A und J ein.")
+            continue
+    try:
+        number = tuturBuchstabeInNummer[tutorBuchstabe]
+        tutorNumber = tutorNumberPicker[blattnummer][number]
+    except Exception:
+        tutorInputIncomplete = True
+        valdidCofig = False
+        print("Etwas ist schief gelaufen :/ Bitte versuche es manuell")
+
 
 while genFalscheAbgabenIncomplete:
     try:
@@ -83,7 +129,9 @@ while genFalscheAbgabenIncomplete:
 
 # Restliche Config
 pattern = f"^UE{blattnummer}_\w+(\[\d+\])?\.zip$" #^UE\d{2}_\w+(\[\d+\])?\.zip$
-patternTeam = f'UE{blattnummer}_(.*?)\.zip'
+#patternTeam = f'UE{blattnummer}_(.*?)\.zip' 
+
+patternTeam = f'UE{blattnummer}_([\w\s]+)(?:\[.*\])?\.zip'
 targetDir = os.path.normpath(config['Dateien']['Speicherort']) 
 
 try:
@@ -104,6 +152,9 @@ class Abgabe:
         return repr(self.name)
     def fileExtension(self):
         return os.path.splitext(self.name)
+    def getNameID(self):
+        return extract_team_name(self.name)
+    #   return self.userID
     def equals(self, abgabe) -> bool:
         if self.userID == abgabe.userID and self.name != abgabe.name:
             return True
@@ -126,14 +177,23 @@ def extract_team_name(file_name):
     else:
         return None
 
+def extract_team_name_from_Abgabe(abgabe):
+    return abgabe.userID
+    match = re.match(patternTeam, abgabe.name)
+    if match:
+        extracted_text = match.group(1)
+        return extracted_text
+    else:
+        return None
+
+def getDate(abgabe):
+    return abgabe.date
 
 
 response = requests.get(f'{api_url}/folder/{folder[blattnummer]}/files?limit=500', auth=HTTPBasicAuth(username, password))
 
 if response.status_code == 200:
     data = response.json()
-    #print(data)
-
     lenght = len(data['collection'])
     files = []
     fileNames = []
@@ -158,16 +218,29 @@ if response.status_code == 200:
 
     # Keep latest Version
     print("Behalte nur die neuste Abgabe von jedem Team.", end="")
+    #files.sort(key=extract_team_name_from_Abgabe)
+    filebyID = {}
     for file in files:
-        for cfile in files:
-            if file.equals(cfile):
-                if file.date > cfile.date:
-                    files.remove(cfile)
-                else:
-                    files.remove(file)
+        filebyID[file.getNameID()] = file
+
+    uniqueID = filebyID.keys()
+    filebyID = {}
+    for id in uniqueID:
+        filebyID[id] = []
+    
+    for file in files:
+        temparray = filebyID[file.getNameID()]
+        temparray.append(file)
+        filebyID[file.getNameID()] = temparray
+
+    newestfiles = []
+
+    for id in uniqueID:
+        filebyID[id].sort(key=getDate, reverse=True)
+        newestfiles.append(filebyID[id][0])
     print(" - Fertig!")
 
-    files = sorted(files, key=lambda abgabe: abgabe.name, reverse=True)    
+    files = sorted(newestfiles, key=lambda abgabe: abgabe.name, reverse=True)    
     print(f"Dateien sind sortiert! Es gibt {len(files)} valide Abgaben. Schätzung: {len(files)}/{numberOfTutors} = {len(files)/numberOfTutors}.") 
     
     if genFalscheAbgaben:
@@ -178,15 +251,18 @@ if response.status_code == 200:
         emails = ""
         count = 0
         filePath = os.path.join(targetDir,'falscheAbgaben.txt')
-        with open(filePath, "w") as file:
-            pbar = tqdm(illegalUserIDs, unit="User")
-            pbar.set_description("Erstelle Liste von Usern mit falscher Abgabe.")
-            for user in pbar:
-                response = requests.get(api_url+'/user/'+user, auth=HTTPBasicAuth(username, password)).json()
-                emails = emails + response['email']+";"
-                count = count + 1
-            file.write(emails)
-        print(f"Die Falschen-Abgaben-Datei wurde erfolgreich gespeichert. Es haben insgesamt {count} Personen eine falsche Datei hochgeladen.")
+        pbar = tqdm(illegalUserIDs, unit="User")
+        pbar.set_description("Erstelle Liste von Usern mit falscher Abgabe.")
+        for user in pbar:
+            response = requests.get(api_url+'/user/'+user, auth=HTTPBasicAuth(username, password)).json()
+            emails = emails + response['email']+";"
+            count = count + 1
+        if emails != '':
+            with open(filePath, "w") as file:
+                file.write(emails)
+            print(f"Die Falschen-Abgaben-Datei wurde erfolgreich gespeichert. Es haben insgesamt {count} Personen eine falsche Datei hochgeladen.")
+        else:
+            print(f"Die Falschen-Abgaben-Datei wird nicht erzeugt. Es haben keine Personen eine falsche Datei hochgeladen.")
 
 
 
