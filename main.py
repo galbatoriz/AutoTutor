@@ -62,6 +62,8 @@ tutorNumberPicker = {
     "13" : [5, 6, 7, 0, 1, 2, 3, 4]
 }
 
+
+
 genFalscheAbgaben = True
 
 # Blattnummer, Tutornummer, Falsche Abgaben 
@@ -123,7 +125,6 @@ while genFalscheAbgabenIncomplete:
         else:        
             raise ValueError
         genFalscheAbgabenIncomplete = False
-        tutorNumber = number
     except ValueError:
         print("Ungültige Eingabe. Wähle y = ja oder n = nein.")
 
@@ -265,10 +266,11 @@ if response.status_code == 200:
             print(f"Die Falschen-Abgaben-Datei wird nicht erzeugt. Es haben keine Personen eine falsche Datei hochgeladen.")
 
 
-
     filesToDownload = split_list(files)
+    allAbgaben = files
     teams = ""
     emailList = {}
+    print(f"Du bekommst heute den {tutorNumber}. Teil. Es gibt die Teile 0 bis 7")
     if len(filesToDownload[tutorNumber]) > 0:
         pbar = tqdm(filesToDownload[tutorNumber], unit="Datei")
         pbar.set_description("Lade Dateien herunter")
@@ -293,18 +295,41 @@ if response.status_code == 200:
         print("Alle Dateien wurden erfolgreich heruntergeladen.")
     else:
         print("Es gibt keine Dateien zum Runterladen.")
-
     filePath = os.path.join(targetDir, f'mailList_{blattnummer}.txt') 
     with open(filePath, "w") as file:
         emailList_string = "\n".join([f'{key}: {value}' for key, value in emailList.items()])
         file.write(emailList_string)
     print(f"Die E-Mail-Liste für die Rückgabe wurde erfolgreich erstellt.")
     
-    filePath = os.path.join(targetDir,f'score{tutorBuchstabe}_{blattnummer}.csv')
+    filePath = os.path.join(targetDir,f'score_{tutorBuchstabe}_{blattnummer}.csv')
     with open(filePath, "w") as file:
         file.write(teams)
     print(f"Die score.csv-Datei wurde erfolgreich erstellt.")
 
+
+    filePath = os.path.join(targetDir,f'Verteilung_UE{blattnummer}.txt')
+    tutoren = "ADFIBJGC"
+    string = "" 
+    with open(filePath, "w") as file:
+        
+
+        for buchstabe in tutoren:
+            number = tuturBuchstabeInNummer[buchstabe]
+            tutorNumber = tutorNumberPicker[blattnummer][number]
+            files = filesToDownload[tutorNumber]
+            file.write(f"Korrekturen für Tutor {buchstabe} - [TutorBuchstabe: {tutorNumber} - Anzahl: {len(files)}]\n")
+            for abgabe in files:
+                team_name = extract_team_name(abgabe.name)
+                file.write(team_name + '\n')
+            file.write('\n')
+        file.write(f"Es gibt insgesamt {len(allAbgaben)} Teams. Hier sind die Datei- und Teamnamen:\n")
+        count = 1
+        
+        
+        for abgabe in allAbgaben:
+            file.write(f"{count}: {abgabe.name} - {extract_team_name(abgabe.name)}\n")
+            count = count +1
+    print(f"Die Verteilungs-Datei wurde erfolgreich erstellt.")          
 else:
     print(f"Fehler bei der Anfrage: {response.status_code}")
     print(response.text)
