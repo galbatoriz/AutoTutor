@@ -35,6 +35,16 @@ folder = {
     
 }
 # ADFIBJGC
+# tuturBuchstabeInNummer = {
+#     "A": 0,
+#     "D": 1,
+#     "F": 2,
+#     "I": 3,
+#     "B": 4,
+#     "J": 5,
+#     "G": 6,
+#     "C" : 7
+# }
 tuturBuchstabeInNummer = {
     "A": 0,
     "D": 1,
@@ -43,23 +53,36 @@ tuturBuchstabeInNummer = {
     "B": 4,
     "J": 5,
     "G": 6,
-    "C" :7
+
 }
 
+
+# tutorNumberPicker = {
+#     "01" : [0, 1, 2, 3, 4, 5, 6, 7],
+#     "02" : [7, 0, 1, 2, 3, 4, 5, 6],
+#     "03" : [6, 7, 0, 1, 2, 3, 4, 5], 
+#     "04" : [5, 6, 7, 0, 1, 2, 3, 4],
+#     "05" : [4, 5, 6, 7, 0, 1, 2, 3],
+#     "06" : [3, 4, 5, 6, 7, 0, 1, 2],
+#     "07" : [2, 3, 4, 5, 6, 7, 0, 1],
+#     "08" : [1, 2, 3, 4, 5, 6, 7, 0],
+#     "09" : [1, 2, 3, 4, 5, 6, 7, 0],
+#     "10" : [0, 1, 2, 3, 4, 5, 6, 7],
+#     "11" : [7, 0, 1, 2, 3, 4, 5, 6],
+#     "12" : [6, 7, 0, 1, 2, 3, 4, 5],
+#     "13" : [5, 6, 7, 0, 1, 2, 3, 4]
+# }
 tutorNumberPicker = {
-    "01" : [0, 1, 2, 3, 4, 5, 6, 7],
-    "02" : [7, 0, 1, 2, 3, 4, 5, 6],
-    "03" : [6, 7, 0, 1, 2, 3, 4, 5], 
-    "04" : [5, 6, 7, 0, 1, 2, 3, 4],
-    "05" : [4, 5, 6, 7, 0, 1, 2, 3],
-    "06" : [3, 4, 5, 6, 7, 0, 1, 2],
-    "07" : [2, 3, 4, 5, 6, 7, 0, 1],
-    "08" : [1, 2, 3, 4, 5, 6, 7, 0],
-    "09" : [1, 2, 3, 4, 5, 6, 7, 0],
-    "10" : [0, 1, 2, 3, 4, 5, 6, 7],
-    "11" : [7, 0, 1, 2, 3, 4, 5, 6],
-    "12" : [6, 7, 0, 1, 2, 3, 4, 5],
-    "13" : [5, 6, 7, 0, 1, 2, 3, 4]
+    "01" : [0, 1, 2, 3, 4, 5, 6],
+    "03" : [6, 0, 1, 2, 3, 4, 5], 
+    "04" : [5, 6, 0, 1, 2, 3, 4],
+    "05" : [4, 5, 6, 0, 1, 2, 3],
+    "06" : [3, 4, 5, 6, 0, 1, 2],
+    "07" : [2, 3, 4, 5, 6, 0, 1],
+    "08" : [1, 2, 3, 4, 5, 6, 0],
+    "10" : [0, 1, 2, 3, 4, 5, 6],
+    "12" : [6, 0, 1, 2, 3, 4, 5],
+    "13" : [5, 6, 0, 1, 2, 3, 4]
 }
 
 
@@ -133,7 +156,8 @@ pattern = f"^UE{blattnummer}_\w+(\[\d+\])?\.zip$" #^UE\d{2}_\w+(\[\d+\])?\.zip$
 #patternTeam = f'UE{blattnummer}_(.*?)\.zip' 
 
 patternTeam = f'UE{blattnummer}_([\w\s]+)(?:\[.*\])?\.zip'
-targetDir = os.path.normpath(config['Dateien']['Speicherort']) 
+speicherort_str = config['Dateien']['Speicherort']+f"/UE{blattnummer}"
+targetDir = os.path.normpath(speicherort_str) 
 
 try:
    os.makedirs(targetDir)
@@ -308,7 +332,8 @@ if response.status_code == 200:
 
 
     filePath = os.path.join(targetDir,f'Verteilung_UE{blattnummer}.txt')
-    tutoren = "ADFIBJGC"
+    #tutoren = "ADFIBJGC"
+    tutoren = "ADFIBJG"
     string = "" 
     with open(filePath, "w") as file:
         
