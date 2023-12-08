@@ -294,7 +294,7 @@ if response.status_code == 200:
     allAbgaben = files
     teams = ""
     emailList = {}
-    print(f"Du bekommst heute den {tutorNumber}. Teil. Es gibt die Teile 0 bis 7")
+    print(f"Du bekommst heute den {tutorNumber}. Teil. Es gibt die Teile 0 bis {numberOfTutors-1}")
     if len(filesToDownload[tutorNumber]) > 0:
         pbar = tqdm(filesToDownload[tutorNumber], unit="Datei")
         pbar.set_description("Lade Dateien herunter")
